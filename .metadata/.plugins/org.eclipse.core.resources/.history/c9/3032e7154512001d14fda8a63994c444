@@ -1,0 +1,23 @@
+package com.electricityBillingSystem.services;
+
+
+
+import com.electricityBillingSystem.beans.Bill;
+import com.electricityBillingSystem.beans.User;
+
+public interface IAdminServices {
+	
+	public void adminHomePage(User user) throws Exception; 
+	
+	public void displayAdminInformation(User user) throws Exception;
+	
+	public void addNewCustomer(User user) throws Exception;
+	
+	public void displayAllUsers(User user) throws Exception;
+	
+	public void generateBill(User user) throws Exception;
+	
+	public User searchCustomerById(String customerId);
+	
+	public void saveBill(Bill generatedBill);
+}

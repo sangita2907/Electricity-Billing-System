@@ -1,0 +1,44 @@
+package com.electricityBillingSystem;
+
+import com.electricityBillingSystem.util.ReadUserData;
+import static com.electricityBillingSystem.util.ElectricityBillingSystemUtil.closeApplication;
+
+//import java.io.IOException;
+//import java.text.ParseException;
+
+import com.electricityBillingSystem.services.ISystemServices;
+import com.electricityBillingSystem.services.SystemServices;
+
+/**
+ * Hello world!
+ *
+ */
+public class App {
+	public static void main(String[] args) throws Exception {
+		while (true) {
+			System.out.println("________________________________________");
+			System.out.println("****** Electricity Billing System ******");
+			System.out.println("________________________________________");
+			System.out.println("1. Login");
+			System.out.println("2. Exit");
+			System.out.println("________________________________________");
+			System.out.println("Enter your choice:");
+			int option = ReadUserData.getIntegerValue("Option: ");
+			
+			switch(option) {
+			case 1:
+				ISystemServices systemService = new SystemServices();
+				systemService.login();
+				break;
+			case 2:
+				closeApplication();
+				break;
+			default:
+				System.out.println("Please choose a correct option..");
+				continue;
+					
+			}
+
+		}
+	}
+}

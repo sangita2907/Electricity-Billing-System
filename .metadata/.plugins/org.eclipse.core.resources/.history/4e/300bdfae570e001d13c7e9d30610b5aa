@@ -1,0 +1,24 @@
+package com.electricityBillingSystem.services;
+
+import java.io.IOException;
+import java.text.ParseException;
+import static com.electricityBillingSystem.util.ReadUserData.getLongValue;
+import static com.electricityBillingSystem.util.ReadUserData.getStringValue;
+
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateId;
+
+
+public class SystemServices implements ISystemServices{
+
+	@Override
+	public void login() throws IOException, ParseException {
+		System.out.println("________________________________________");
+		System.out.println("**************** Log In ****************");
+		
+		long userId = validateId(getLongValue(" ID* [5 Digit]: "));
+		String userPassword = getStringValue("Password*: ");
+		System.out.println("login");
+		
+	}
+
+}

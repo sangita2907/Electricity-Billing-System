@@ -1,0 +1,5 @@
+package com.electricityBillingSystem.exceptions;
+
+public class InvalidUseridPasswordException {
+
+}

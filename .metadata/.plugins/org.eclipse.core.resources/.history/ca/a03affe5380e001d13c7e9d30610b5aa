@@ -1,0 +1,39 @@
+package com.electricityBillingSystem.util;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class InputValidatorUtil {
+	public static long validateId(final long id) {
+		long userId = id;
+		if (Long.toString(id).length() != 5) {
+			System.out.println("[*] Id can't be null, character or special Digit....");
+			System.out.println("[*] Id must be 5 digit long..");
+			userId = validateId(getLongValue("ID* [5 Digit]: "));
+		}
+		return userId;
+	}
+	
+public static String validatePassword(final String password) throws IOException {
+		
+		String userPassword = password;
+
+		String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{6,15}$";
+
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(password);
+
+		if (password.isEmpty() || (matcher.matches() == false)) {
+			System.out.println("[*] password can't be null...");
+			System.out.println("[*] Must contain 1 digit..");
+			System.out.println("[*] Must contain 1 Upper Character..");
+			System.out.println("[*] Must contain 1 Lower Character..");
+			System.out.println("[*] Must contain 1 Special Character..");
+			System.out.println("[*] Must contains at least 6 and at most 15 characters..");
+			userPassword = validatePassword(getStringValue("Password*: "));
+		}
+
+		return userPassword;
+	}
+}

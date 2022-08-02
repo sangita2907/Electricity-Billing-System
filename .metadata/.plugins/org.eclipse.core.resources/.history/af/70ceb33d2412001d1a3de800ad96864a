@@ -1,0 +1,16 @@
+package com.electricityBillingSystem.dao;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+
+import com.electricityBillingSystem.exceptions.DuplicateEntryException;
+
+import com.electricityBillingSystem.beans.User;
+
+public interface IAdminDAO {
+	public void registerNewCustomer(User) throws SQLIntegrityConstraintViolationException, DuplicateEntryException;
+	
+	public List<Object[]> getAllCustomers();
+	
+	public searchCustomerById(String customerId)
+}

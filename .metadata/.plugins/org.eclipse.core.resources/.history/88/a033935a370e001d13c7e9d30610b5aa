@@ -1,0 +1,6 @@
+package com.electricityBillingSystem.services;
+
+public interface ISystemServices {
+	
+	public void login(String userEmail, String userPassword) throws IOException, ParseException;
+}

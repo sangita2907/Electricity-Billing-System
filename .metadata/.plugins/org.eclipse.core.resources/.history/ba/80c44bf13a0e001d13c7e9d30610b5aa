@@ -1,0 +1,5 @@
+package com.electricityBillingSystem.dao;
+
+public interface ISystemDAO {
+	public User validateEmployeeCredentials(Long userId, String userPassword)throws InvalidUsernamePasswordException;
+}

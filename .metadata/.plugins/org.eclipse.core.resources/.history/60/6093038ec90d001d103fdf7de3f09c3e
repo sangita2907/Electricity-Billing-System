@@ -1,0 +1,19 @@
+package com.electricityBillingSystem;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "______________________________" );
+        System.out.println("Electricity Billing System");
+        System.out.println( "______________________________" );
+        System.out.println("1. Login");
+        System.out.println("Enter your choice:");
+        
+        
+    }
+}

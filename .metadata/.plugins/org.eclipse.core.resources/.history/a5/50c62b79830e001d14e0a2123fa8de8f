@@ -1,0 +1,17 @@
+package com.electricityBillingSystem.dao;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
+import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.exceptions.DuplicateEntryException;
+
+public class AdminDAO implements IAdminDAO{
+
+	@Override
+	public void registerNewCustomer(User user)
+			throws SQLIntegrityConstraintViolationException, DuplicateEntryException {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

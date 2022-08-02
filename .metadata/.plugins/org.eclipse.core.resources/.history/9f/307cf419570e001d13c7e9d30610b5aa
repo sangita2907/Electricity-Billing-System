@@ -1,0 +1,29 @@
+package com.electricityBillingSystem.dao;
+
+import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.exceptions.InvalidUseridPasswordException;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+public class SystemDAO implements ISystemDAO{
+
+	@Override
+	public User validateEmployeeCredentials(Long userId, String userPassword) throws InvalidUseridPasswordException {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<Employee> query = criteriaBuilder.createQuery(Employee.class);
+		Root<Employee> root = query.from(Employee.class);
+		query.select(root).where(criteriaBuilder.equal(root.get("email"), userEmail),
+				criteriaBuilder.equal(root.get("password"), userPassword));
+
+		Query<Employee> employeeQuery = session.createQuery(query);
+		Employee employee = null;
+		try {
+			employee = employeeQuery.getSingleResult();
+		} catch (NoResultException e) {
+			throw new InvalidUsernamePasswordException();
+		}
+		return employee;
+	}
+
+}

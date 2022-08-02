@@ -1,0 +1,24 @@
+package com.electricityBillingSystem.dao;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
+import org.hibernate.Session;
+
+import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.exceptions.DuplicateEntryException;
+import com.electricityBillingSystem.util.HibernateUtil;
+
+public class AdminDAO implements IAdminDAO{
+
+	@Override
+	public void registerNewCustomer(User user)
+			throws SQLIntegrityConstraintViolationException, DuplicateEntryException {
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		session.save(user);
+		session.getTransaction().commit();
+		
+	}
+
+}

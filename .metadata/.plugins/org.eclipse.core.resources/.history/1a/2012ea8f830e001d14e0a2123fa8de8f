@@ -1,0 +1,9 @@
+package com.electricityBillingSystem.services;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+public interface ISystemServices {
+	
+	public void login() throws IOException, ParseException, Exception;
+}

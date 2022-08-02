@@ -1,0 +1,10 @@
+package com.electricityBillingSystem.services;
+
+import java.io.IOException;
+
+import com.electricityBillingSystem.beans.User;
+
+public interface IAdminServices {
+	
+	public void adminHomePage(User user) throws IOException; 
+}

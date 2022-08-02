@@ -1,0 +1,7 @@
+package com.electricityBillingSystem.dao;
+
+import com.electricityBillingSystem.beans.User;
+
+public interface ISystemDAO {
+	public User validateEmployeeCredentials(Long userId, String userPassword)throws InvalidUseridPasswordException;
+}

@@ -1,0 +1,96 @@
+package com.electricityBillingSystem.util;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.electricityBillingSystem.util.ReadUserData.getLongValue;
+import static com.electricityBillingSystem.util.ReadUserData.getStringValue;
+import static com.electricityBillingSystem.util.ReadUserData.getDateValue;
+
+public class InputValidatorUtil {
+	public static long validateId(final long id) {
+		long userId = id;
+		if (Long.toString(id).length() != 5) {
+			System.out.println("[*] Id can't be null, character or special Digit....");
+			System.out.println("[*] Id must be 5 digit long..");
+			userId = validateId(getLongValue("ID* [5 Digit]: "));
+		}
+		return userId;
+	}
+
+	public static String validatePassword(final String password) throws IOException {
+
+		String userPassword = password;
+
+		String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{6,15}$";
+
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(password);
+
+		if (password.isEmpty() || (matcher.matches() == false)) {
+			System.out.println("[*] password can't be null...");
+			System.out.println("[*] Must contain 1 digit..");
+			System.out.println("[*] Must contain 1 Upper Character..");
+			System.out.println("[*] Must contain 1 Lower Character..");
+			System.out.println("[*] Must contain 1 Special Character..");
+			System.out.println("[*] Must contains at least 6 and at most 15 characters..");
+			userPassword = validatePassword(getStringValue("Password*: "));
+		}
+
+		return userPassword;
+	}
+
+	public static String validateName(final String name) throws IOException {
+		String userName = name;
+		if (name.isEmpty()) {
+			System.out.println("[*] Name can't be null...");
+			userName = validateName(getStringValue("Name: "));
+		}
+
+		String regex = "^[a-zA-Z\\s]*$";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(name);
+		if (m.matches() == false) {
+			System.out.println("[*] Name Can't contains digits and special Character..");
+			userName = validateName(getStringValue("Name: "));
+		}
+		return userName;
+	}
+
+	public static long validatePhoneNumber(final long phoneNumber) {
+		long userPhoneNumber = phoneNumber;
+		if (Long.toString(phoneNumber).length() != 10) {
+			System.out.println("[*] Please enter a valid 10 digit Contact Number..");
+			System.out.println("[*] Contact Number can't be null, character or special Digit....");
+			userPhoneNumber = validatePhoneNumber(getLongValue("Contact Number*: "));
+		}
+		return userPhoneNumber;
+	}
+
+	public static String validateEmail(final String email) throws IOException {
+		String userEmail = email;
+		if (email.isEmpty()) {
+			System.out.println("[*] Email can't be null...");
+			userEmail = validateEmail(getStringValue("Email*: "));
+		}
+		String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(email);
+		if (matcher.matches() == false) {
+			System.out.println("Please enter a valid email...");
+			userEmail = validateEmail(getStringValue("Email*: "));
+		}
+		return userEmail;
+	}
+
+	public static Date validateDob(Date date) {
+		Date userDob = date;
+		if (date == null) {
+			System.out.println("[*] Enter a valid date with mention pattern..");
+			userDob = validateDob(getDateValue("Date of Birth* (like 20 JAN 2000): "));
+		}
+		return userDob;
+	}
+}

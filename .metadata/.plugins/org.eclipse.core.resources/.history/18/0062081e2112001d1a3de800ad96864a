@@ -1,0 +1,212 @@
+package com.electricityBillingSystem.services;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.PersistenceException;
+
+import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.dao.AdminDAO;
+import com.electricityBillingSystem.dao.IAdminDAO;
+import com.electricityBillingSystem.exceptions.DuplicateEntryException;
+
+import static com.electricityBillingSystem.util.ReadUserData.getIntegerValue;
+import static com.electricityBillingSystem.util.ReadUserData.getLongValue;
+import static com.electricityBillingSystem.util.ReadUserData.getStringValue;
+import static com.electricityBillingSystem.util.ReadUserData.getDateValue;
+
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateName;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateDob;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validatePhoneNumber;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateEmail;
+
+import static com.electricityBillingSystem.util.ElectricityBillingSystemUtil.closeApplication;
+import static com.electricityBillingSystem.util.ElectricityBillingSystemUtil.adminLogout;
+
+public class AdminServices implements IAdminServices {
+
+	@Override
+	public void adminHomePage(User user) throws Exception {
+
+		System.out.println("________________________________________");
+		System.out.println("********** Admin Home Page *************");
+		System.out.println("________________________________________");
+		System.out.println("1. Generate Bills");
+		System.out.println("2. View Bills");
+		System.out.println("3. Add New Connection");
+		System.out.println("4. View Customers");
+		System.out.println("5. View Your profile");
+		System.out.println("6. Logout");
+		System.out.println("7. Close Application");
+		System.out.println("________________________________________");
+		System.out.println("Enter your choice:");
+		int option = getIntegerValue("Option: ");
+
+		switch (option) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			addNewCustomer();
+			break;
+		case 4:
+			displayAllUsers(user);
+			break;
+		case 5:
+			displayAdminInformation(user);
+			break;
+		case 6:
+			adminLogout(user);
+			break;
+		case 7:
+			closeApplication();
+			break;
+		default:
+			System.out.println("Please choose a correct option..\n");
+			adminHomePage(user);
+			break;
+
+		}
+
+	}
+
+	@Override
+	public void displayAdminInformation(User user) throws Exception {
+		System.out.println("________________________________________");
+		System.out.println("************** Your Profile ************");
+		System.out.println("________________________________________\n");
+		System.out.println("Admin ID: " + user.getId());
+		System.out.println("Full Name: " + user.getName());
+		
+		String pattern = "dd MMM yyyy";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String date = simpleDateFormat.format(user.getDob());
+
+		System.out.println("Date of Birth: " + date);
+		System.out.println("Mobile Number: " + user.getPhoneNumber());
+		System.out.println("Email: " + user.getEmail());
+		System.out.println("Address: " + user.getAddress());
+		System.out.println("\n****************************************");
+		System.out.println("1. Edit Profile");
+		System.out.println("2. Back to Home");
+		System.out.println("3. Logout");
+		System.out.println("4. Close Application");
+		System.out.println("________________________________________");
+		System.out.println("Enter your choice:");
+		int option = getIntegerValue("Option: ");
+
+		switch (option) {
+		case 1:
+			break;
+		case 2:
+			adminHomePage(user);
+			break;
+		case 3:
+			adminLogout(user);
+			break;
+		case 4:
+			closeApplication();
+			break;
+		default:
+			System.out.println("Please choose a correct option..\n");
+			displayAdminInformation(user);
+			break;
+		}
+	}
+
+	@Override
+	public void addNewCustomer() throws Exception {
+		
+		System.out.println("________________________________________");
+		System.out.println("***** New Connection Registration ******");
+		System.out.println("________________________________________\n");
+		
+		
+		String name = validateName(getStringValue("Full Name*: "));
+		String email = validateEmail(getStringValue("Email*: "));
+		long phoneNumber = validatePhoneNumber(getLongValue("Contact Number*: "));
+		String phone = "" + phoneNumber;
+		String address = getStringValue("Address: ");
+		Date dob = validateDob(getDateValue("Date of Birth* (like 20 JAN 2000): "));
+		int meterId = getIntegerValue("Meter Id: ");
+		System.out.println("Enter 1 for ADMIN\nEnter 2 for USER");
+		int roleId = getIntegerValue("Role: ");
+		
+		User user = new User();
+		
+		user.setName(name);
+		user.setEmail(email);
+		user.setPhoneNumber(phone);
+		user.setAddress(address);
+		user.setDob(dob);
+		user.setMeterId(meterId);
+		user.setRoleId(roleId);
+		user.setStatus(1);
+		
+		IAdminDAO adminDao = new AdminDAO();
+		try {
+			adminDao.registerNewCustomer(user);
+			System.out.println("Registration Successfull...");
+		} catch (SQLIntegrityConstraintViolationException | DuplicateEntryException | PersistenceException e) {
+			throw new DuplicateEntryException();
+		}
+		adminHomePage(user);
+	}
+
+	public void displayAllUsers(User user) throws Exception {
+		
+		//System.out.println("________________________________________\n");
+		
+		IAdminDAO adminDao = new AdminDAO();
+		List<Object[]> customerList = adminDao.getAllCustomers();
+		
+        String line = new String(new char[30]).replace('\0', '-');
+        
+        System.out.println("________________________________________");
+		System.out.println("************** EBS Customers ***********");
+		for(Object[] customer : customerList) {
+			
+			System.out.println(line);
+			System.out.println("\nId: " + customer[0]);
+			System.out.println("Name: " + customer[1]);
+			System.out.println("Email: " + customer[2]);
+			System.out.println("Phone Number: " + customer[3]);
+			System.out.println("Date of Birth: " + customer[4]);
+			System.out.println("Address: " + customer[5]);
+			System.out.println("Meter Number: " + customer[6]);
+			System.out.println("Connection Date: " + customer[9]);
+			
+			System.out.println(line);
+		}
+		
+		System.out.println("\n****************************************");
+		System.out.println("1. Back to Home");
+		System.out.println("2. Logout");
+		System.out.println("3. Close Application");
+		System.out.println("________________________________________");
+		System.out.println("Enter your choice:");
+		int option = getIntegerValue("Option: ");
+
+		switch (option) {
+		case 1:
+			adminHomePage(user);
+			break;
+		case 2:
+			adminLogout(user);
+			break;
+		case 3:
+			closeApplication();
+			break;
+		default:
+			System.out.println("Please choose a correct option..\n");
+			displayAllUsers(user);
+			break;
+		}
+		
+		
+	}
+
+}

@@ -1,0 +1,71 @@
+package com.electricityBillingSystem.beans;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.GenericGenerator;
+
+import com.electricityBillingSystem.services.StringPrefixedSequenceIdGenerator;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "user")
+public class User {
+	@Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @GenericGenerator(
+        name = "user_seq", 
+        strategy = "com.electricityBillingSystem.services.StringPrefixedSequenceIdGenerator", 
+        parameters = {
+            @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
+            @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "EBS_"),
+            @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%05d") })
+	@Column(name = "id")
+	private String id;
+	
+	@Column(name = "name")
+	private String name;
+	
+	@Column(name = "phone_number", unique = true)
+	private String phoneNumber;
+	
+	@Column(name = "email", unique = true)
+	private String email;
+	
+	@Column(name = "dob")
+	private Date dob;
+	
+	@Column(name = "address")
+	private String address;
+	
+	@Column(name = "meter_id", unique = true)
+	private long meterId;
+	
+	@Column(name = "role_id")
+	private int roleId;
+	
+	@Column(name = "status")
+	private int status;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "connection_date")
+	private Date connectionDate;
+	
+	
+	
+}

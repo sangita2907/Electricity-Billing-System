@@ -1,0 +1,15 @@
+package com.electricityBillingSystem;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "______________________________" );
+        System.out.Println("Electricity Billing System");
+        
+    }
+}
