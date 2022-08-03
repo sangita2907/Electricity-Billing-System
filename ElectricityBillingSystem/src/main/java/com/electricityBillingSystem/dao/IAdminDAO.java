@@ -21,4 +21,6 @@ public interface IAdminDAO {
 	public List<Object[]> checkCurrentMonthBill(String customerId);
 	
 	public List<Object[]> calculateDue(String customerId);
+	
+	public List<Object[]> getConnectionRequest();
 }

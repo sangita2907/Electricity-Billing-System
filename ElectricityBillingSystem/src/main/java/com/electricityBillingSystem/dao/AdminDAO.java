@@ -89,4 +89,14 @@ public class AdminDAO implements IAdminDAO{
 		
 	}
 
+	@Override
+	public List<Object[]> getConnectionRequest() {
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		String query = "select id, name, phone_number, email, dob, address, request_date from user_request order by request_date";
+		NativeQuery nativeQuery = session.createSQLQuery(query); 
+		List<Object[]> allRequest = nativeQuery.list();
+		session.close();
+		return allRequest;
+	}
+
 }

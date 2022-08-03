@@ -7,6 +7,7 @@ import org.hibernate.service.ServiceRegistry;
 
 import com.electricityBillingSystem.beans.Bill;
 import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.beans.UserRequest;
 
 /**
  * @author Sangita Halder
@@ -23,6 +24,7 @@ public class HibernateUtil {
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
 		configuration.addAnnotatedClass(User.class);
 		configuration.addAnnotatedClass(Bill.class);
+		configuration.addAnnotatedClass(UserRequest.class);
 		ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
 				.applySettings(configuration.getProperties()).build();
 		return configuration.buildSessionFactory(serviceRegistry);

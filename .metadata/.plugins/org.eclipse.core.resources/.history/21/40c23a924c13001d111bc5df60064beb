@@ -1,0 +1,68 @@
+package com.electricityBillingSystem.services;
+
+import java.util.Date;
+import java.util.Objects;
+
+import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.dao.ISystemDAO;
+import com.electricityBillingSystem.dao.SystemDAO;
+import com.electricityBillingSystem.exceptions.InvalidUseridPasswordException;
+
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateDob;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateEmail;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateName;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validatePhoneNumber;
+import static com.electricityBillingSystem.util.ReadUserData.getDateValue;
+import static com.electricityBillingSystem.util.ReadUserData.getIntegerValue;
+import static com.electricityBillingSystem.util.ReadUserData.getLongValue;
+import static com.electricityBillingSystem.util.ReadUserData.getStringValue;
+
+
+public class SystemServices implements ISystemServices{
+
+	@Override
+	public void login() throws Exception {
+		System.out.println("________________________________________");
+		System.out.println("**************** Log In ****************");
+		
+		String userId = getStringValue(" ID*: ");
+		String userPassword = getStringValue("Password*: ");
+		
+		ISystemDAO systemDao = new SystemDAO();
+		try {
+			User user = systemDao.validateUserCredentials(userId, userPassword);
+			if (Objects.isNull(user)) {
+				System.out.println("Please enter correct id and password..");
+			} else {
+				if(user.getRoleId() == 1) {
+					IAdminServices adminServices = new AdminServices();
+					adminServices.adminHomePage(user);
+				}else {
+					//userHomePage();
+				}
+			}
+		} catch (InvalidUseridPasswordException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public void connectionRequest() throws Exception {
+		System.out.println("________________________________________");
+		System.out.println("***** New Connection Request ******");
+		System.out.println("________________________________________\n");
+
+		String name = validateName(getStringValue("Full Name*: "));
+		String email = validateEmail(getStringValue("Email*: "));
+		long phoneNumber = validatePhoneNumber(getLongValue("Contact Number*: "));
+		String phone = "" + phoneNumber;
+		String address = getStringValue("Address: ");
+		Date dob = validateDob(getDateValue("Date of Birth* (like 20 JAN 2000): "));
+		
+		ISystemDAO systemDao = new SystemDAO();
+		systemDao.addConnectionRequest(name, email, phone, address, dob);
+		
+	}
+
+}

@@ -1,0 +1,5 @@
+package com.electricityBillingSystem.beans;
+
+public class UserRequest {
+
+}

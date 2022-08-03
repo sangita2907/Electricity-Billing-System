@@ -1,8 +1,0 @@
-package com.electricityBillingSystem.util;
-
-public class ElectricityBillingSystemUtil {
-	public static void closeApplication() {
-		System.out.println("Application Closed...");
-		System.exit(0);
-	}
-}

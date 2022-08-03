@@ -2,6 +2,7 @@ package com.electricityBillingSystem.services;
 
 import java.math.BigInteger;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,8 +44,9 @@ public class AdminServices implements IAdminServices {
 		System.out.println("3. Add New Connection");
 		System.out.println("4. View Customers");
 		System.out.println("5. View Your profile");
-		System.out.println("6. Logout");
-		System.out.println("7. Close Application");
+		System.out.println("6. View Connection Request");
+		System.out.println("7. Logout");
+		System.out.println("8. Close Application");
 		System.out.println("________________________________________");
 		int option = getIntegerValue("Option: ");
 
@@ -70,9 +72,12 @@ public class AdminServices implements IAdminServices {
 			displayAdminInformation(user);
 			break;
 		case 6:
-			adminLogout(user);
+			displayConnectionRequest(user);
 			break;
 		case 7:
+			adminLogout(user);
+			break;
+		case 8:
 			closeApplication();
 			break;
 		default:
@@ -101,7 +106,6 @@ public class AdminServices implements IAdminServices {
 		System.out.println("Email: " + user.getEmail());
 		System.out.println("Address: " + user.getAddress());
 		System.out.println("\n****************************************");
-		System.out.println("1. Edit Profile");
 		System.out.println("2. Back to Home");
 		System.out.println("3. Logout");
 		System.out.println("4. Close Application");
@@ -110,14 +114,12 @@ public class AdminServices implements IAdminServices {
 
 		switch (option) {
 		case 1:
-			break;
-		case 2:
 			adminHomePage(user);
 			break;
-		case 3:
+		case 2:
 			adminLogout(user);
 			break;
-		case 4:
+		case 3:
 			closeApplication();
 			break;
 		default:
@@ -389,6 +391,50 @@ public class AdminServices implements IAdminServices {
 		}
 		//System.out.println("Total due: " + due);
 		return due;
+	}
+
+	@Override
+	public void displayConnectionRequest(User user) throws Exception {
+		IAdminDAO adminDao = new AdminDAO();
+		List<Object[]> allRequest = adminDao.getConnectionRequest();
+		
+		System.out.println("________________________________________");
+		System.out.println("************ Connection Request *********");
+		for (Object[] request : allRequest) {
+
+			System.out.println(line);
+			System.out.println("\nRequest Id: " + (String)request[0]);
+			System.out.println("Name: " + (String)request[1]);
+			System.out.println("Phone Number: " + (String)request[2]);
+			System.out.println("Email: " + (String)request[3]);
+			System.out.println("Date of Birth: " + (Timestamp)request[4]);
+			System.out.println("Address: " + (String)request[5]);
+			System.out.println("Request Date: " + (Timestamp)request[6]);
+			
+
+		}
+		System.out.println("\n****************************************");
+		System.out.println("1. Back to Home");
+		System.out.println("2. Logout");
+		System.out.println("3. Close Application");
+		System.out.println("________________________________________");
+		int option = getIntegerValue("Option: ");
+
+		switch (option) {
+		case 1:
+			adminHomePage(user);
+			break;
+		case 2:
+			adminLogout(user);
+			break;
+		case 3:
+			closeApplication();
+			break;
+		default:
+			System.out.println("Please choose a correct option..\n");
+			displayConnectionRequest(user);
+			break;
+		}
 	}
 
 }

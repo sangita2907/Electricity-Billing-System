@@ -20,7 +20,8 @@ public class App {
 			System.out.println("****** Electricity Billing System ******");
 			System.out.println("________________________________________");
 			System.out.println("1. Login");
-			System.out.println("2. Exit");
+			System.out.println("2. Request For Connection");
+			System.out.println("3. Exit");
 			System.out.println("________________________________________");
 			System.out.println("Enter your choice:");
 			int option = ReadUserData.getIntegerValue("Option: ");
@@ -31,6 +32,11 @@ public class App {
 				systemService.login();
 				break;
 			case 2:
+				ISystemServices systemService1 = new SystemServices();
+				systemService1.connectionRequest();
+				
+				break;
+			case 3:
 				closeApplication();
 				break;
 			default:

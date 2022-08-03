@@ -1,12 +1,22 @@
 package com.electricityBillingSystem.services;
 
+import java.util.Date;
 import java.util.Objects;
 
+import org.jboss.jandex.Main;
+
 import com.electricityBillingSystem.beans.User;
+import com.electricityBillingSystem.beans.UserRequest;
 import com.electricityBillingSystem.dao.ISystemDAO;
 import com.electricityBillingSystem.dao.SystemDAO;
 import com.electricityBillingSystem.exceptions.InvalidUseridPasswordException;
 
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateDob;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateEmail;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validateName;
+import static com.electricityBillingSystem.util.InputValidatorUtil.validatePhoneNumber;
+import static com.electricityBillingSystem.util.ReadUserData.getDateValue;
+import static com.electricityBillingSystem.util.ReadUserData.getLongValue;
 import static com.electricityBillingSystem.util.ReadUserData.getStringValue;
 
 
@@ -30,12 +40,41 @@ public class SystemServices implements ISystemServices{
 					IAdminServices adminServices = new AdminServices();
 					adminServices.adminHomePage(user);
 				}else {
-					//userHomePage();
+					IUserServices userServices = new UserServices();
+					userServices.userHomePage(user);
 				}
 			}
 		} catch (InvalidUseridPasswordException e) {
 			System.out.println(e.getMessage());
 		}
+		
+	}
+
+	@Override
+	public void connectionRequest() throws Exception {
+		System.out.println("________________________________________");
+		System.out.println("***** New Connection Request ******");
+		System.out.println("________________________________________\n");
+
+		String name = validateName(getStringValue("Full Name*: "));
+		String email = validateEmail(getStringValue("Email*: "));
+		long phoneNumber = validatePhoneNumber(getLongValue("Contact Number*: "));
+		String phone = "" + phoneNumber;
+		String address = getStringValue("Address: ");
+		Date dob = validateDob(getDateValue("Date of Birth* (like 20 JAN 2000): "));
+		
+		UserRequest userReq = new UserRequest();
+		userReq.setName(name);
+		userReq.setEmail(email);
+		userReq.setPhoneNumber(phone);
+		userReq.setDob(dob);
+		userReq.setAddress(address);
+		
+		ISystemDAO systemDao = new SystemDAO();
+		systemDao.addConnectionRequest(userReq);
+		
+		System.out.println("Request added.."); 
+		Main.main(new String[0]);
 		
 	}
 

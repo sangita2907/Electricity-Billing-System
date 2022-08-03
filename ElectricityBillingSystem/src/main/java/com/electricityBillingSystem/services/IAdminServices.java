@@ -26,4 +26,6 @@ public interface IAdminServices {
 	public boolean checkForCurrentMonthBill(String customerId);
 	
 	public double calculateDue(String customerId);
+	
+	public void displayConnectionRequest(User user) throws Exception;
 }
