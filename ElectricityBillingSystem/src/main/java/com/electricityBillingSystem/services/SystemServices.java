@@ -24,7 +24,7 @@ public class SystemServices implements ISystemServices{
 		try {
 			User user = systemDao.validateUserCredentials(userId, userPassword);
 			if (Objects.isNull(user)) {
-				System.out.println("Please enter correct email and password..");
+				System.out.println("Please enter correct id and password..");
 			} else {
 				if(user.getRoleId() == 1) {
 					IAdminServices adminServices = new AdminServices();

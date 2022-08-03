@@ -6,7 +6,7 @@ public class InvalidUseridPasswordException extends Exception{
 	private String message;
 
 	public InvalidUseridPasswordException() {
-		this.message = "Invalid Email and Password...";
+		this.message = "Invalid Id and Password...";
 	}
 
 	public InvalidUseridPasswordException(String message) {

@@ -1,7 +1,9 @@
 package com.electricityBillingSystem.services;
 
+import java.math.BigInteger;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,7 +106,6 @@ public class AdminServices implements IAdminServices {
 		System.out.println("3. Logout");
 		System.out.println("4. Close Application");
 		System.out.println("________________________________________");
-		// System.out.println("Enter your choice:");
 		int option = getIntegerValue("Option: ");
 
 		switch (option) {
@@ -157,7 +158,7 @@ public class AdminServices implements IAdminServices {
 		IAdminDAO adminDao = new AdminDAO();
 		try {
 			adminDao.registerNewCustomer(user);
-			System.out.println("Registration Successfull...");
+			System.out.println("Successfull...");
 		} catch (SQLIntegrityConstraintViolationException | DuplicateEntryException | PersistenceException e) {
 			throw new DuplicateEntryException();
 		}
@@ -165,8 +166,6 @@ public class AdminServices implements IAdminServices {
 	}
 
 	public void displayAllUsers(User user) throws Exception {
-
-		// System.out.println("________________________________________\n");
 
 		IAdminDAO adminDao = new AdminDAO();
 		List<Object[]> customerList = adminDao.getAllCustomers();
@@ -178,8 +177,8 @@ public class AdminServices implements IAdminServices {
 			System.out.println(line);
 			System.out.println("\nId: " + customer[0]);
 			System.out.println("Name: " + customer[1]);
-			System.out.println("Email: " + customer[2]);
-			System.out.println("Phone Number: " + customer[3]);
+			System.out.println("Phone Number: " + customer[2]);
+			System.out.println("Email: " + customer[3]);
 			System.out.println("Date of Birth: " + customer[4]);
 			System.out.println("Address: " + customer[5]);
 			System.out.println("Meter Number: " + customer[6]);
@@ -191,7 +190,6 @@ public class AdminServices implements IAdminServices {
 		System.out.println("2. Logout");
 		System.out.println("3. Close Application");
 		System.out.println("________________________________________");
-		// System.out.println("Enter your choice:");
 		int option = getIntegerValue("Option: ");
 
 		switch (option) {
@@ -225,34 +223,72 @@ public class AdminServices implements IAdminServices {
 			System.out.println("Unable to find Customer.\nPlease check the Id..");
 			generateBill(user);
 		} else {
-			System.out.println("________________________________________");
-			System.out.println("Generating Bill for - ");
-			System.out.println("Name - " + customer.getName());
-			System.out.println("For any query call Customer on " + customer.getPhoneNumber());
-			System.out.println("________________________________________\n");
-			int unitConsumed = getIntegerValue("Enter Unit Consumed: ");
-			double billToPay = 0;
-			if (unitConsumed < 100) {
-				billToPay = unitConsumed * 1.20;
+			boolean flag = checkForCurrentMonthBill(customerId);
+			if(flag == false) {
+				System.out.println("This month bill is already generated..");
+				System.out.println("\n****************************************");
+				System.out.println("1. Back to Home");
+				System.out.println("2. Logout");
+				System.out.println("3. Close Application");
+				System.out.println("________________________________________");
+				int option = getIntegerValue("Option: ");
+				switch (option) {
+				case 1:
+					adminHomePage(user);
+					break;
+				case 2:
+					adminLogout(user);
+					break;
+				case 3:
+					closeApplication();
+					break;
+				default:
+					System.out.println("Please choose a correct option..\n");
+					adminHomePage(user);
+					break;
+				}
+				
+			} else {
+				double dueAmount = calculateDue(customerId);
+				System.out.println("________________________________________");
+				System.out.println("Generating Bill For: ");
+				System.out.println("Customer Name: " + customer.getName());
+				System.out.println("For any query call Customer on " + customer.getPhoneNumber());
+				System.out.println("________________________________________\n");
+				int unitConsumed = getIntegerValue("Enter Unit Consumed: ");
+				System.out.println("________________________________________\n");
+				double billToPay = 0.0;
+				double currentAmount = 0.0;
+				if (unitConsumed < 100) {
+					currentAmount = unitConsumed * 1.20;
+					billToPay = currentAmount + dueAmount;
+				}
+				// check whether the units are less than 300
+				else if (unitConsumed < 300) {
+					currentAmount = (100 * 1.20 + (unitConsumed - 100) * 2);
+					billToPay = currentAmount + dueAmount;
+				}
+				// check whether the units are greater than 300
+				else if (unitConsumed > 300) {
+					currentAmount = (100 * 1.20 + 200 * 2 + (unitConsumed - 300) * 3);
+					billToPay = currentAmount + dueAmount;
+				}
+				
+				System.out.println("Current Amount: " + currentAmount);
+				System.out.println("Previous due Amount: " + dueAmount);
+				System.out.println("Total Amount: " + billToPay);
+				System.out.println("________________________________________\n");
+				
+				Bill generatedBill = new Bill();
+				generatedBill.setUserId(customer.getId());
+				generatedBill.setUnit(unitConsumed);
+				generatedBill.setPrice(billToPay);
+				generatedBill.setPaymentStatus("not done");
+				generatedBill.setPaymentDate(null);
+	
+				saveBill(generatedBill);
+				adminHomePage(user);
 			}
-			// check whether the units are less than 300
-			else if (unitConsumed < 300) {
-				billToPay = 100 * 1.20 + (unitConsumed - 100) * 2;
-			}
-			// check whether the units are greater than 300
-			else if (unitConsumed > 300) {
-				billToPay = 100 * 1.20 + 200 * 2 + (unitConsumed - 300) * 3;
-			}
-
-			Bill generatedBill = new Bill();
-			generatedBill.setUserId(customer.getId());
-			generatedBill.setUnit(unitConsumed);
-			generatedBill.setPrice(billToPay);
-			generatedBill.setPaymentStatus("not done");
-			generatedBill.setPaymentDate(null);
-
-			saveBill(generatedBill);
-			adminHomePage(user);
 		}
 
 	}
@@ -296,7 +332,6 @@ public class AdminServices implements IAdminServices {
 		System.out.println("2. Logout");
 		System.out.println("3. Close Application");
 		System.out.println("________________________________________");
-		// System.out.println("Enter your choice:");
 		int option = getIntegerValue("Option: ");
 
 		switch (option) {
@@ -315,6 +350,45 @@ public class AdminServices implements IAdminServices {
 			break;
 		}
 
+	}
+
+	@Override
+	public boolean checkForCurrentMonthBill(String customerId) {
+
+		IAdminDAO adminDao = new AdminDAO();
+		List<Object[]> lastBillMonthObject = adminDao.checkCurrentMonthBill(customerId);
+		Integer lastBillMonth = 0;
+		for(Object lastBill : lastBillMonthObject) {
+			lastBillMonth = ((BigInteger) lastBill).intValue();
+		}
+		//System.out.println("last_bill"+lastBillMonth);
+		
+		Date today = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today);
+		int currentMonth = cal.get(Calendar.MONTH)+1;
+		//System.out.println("**" + currentMonth);
+		
+		if(currentMonth==lastBillMonth){
+			//System.out.println("Inside if");
+			return false;
+		}
+		//System.out.println("Outside if");
+		return true;
+	}
+
+	@Override
+	public double calculateDue(String customerId) {
+		IAdminDAO adminDao = new AdminDAO();
+		List<Object[]> unpaidBillsList = adminDao.calculateDue(customerId);
+		double due = 0.0;
+		for(Object[] unpaidBill : unpaidBillsList) {
+			double dueAmount  = ((Number)unpaidBill[2]).doubleValue();
+			//System.out.println("bill Due : " + dueAmount);
+			due = due + dueAmount;
+		}
+		//System.out.println("Total due: " + due);
+		return due;
 	}
 
 }

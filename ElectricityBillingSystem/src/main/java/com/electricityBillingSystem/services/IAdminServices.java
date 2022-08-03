@@ -22,4 +22,8 @@ public interface IAdminServices {
 	public void saveBill(Bill generatedBill);
 	
 	public void viewUnpaidBills(User user) throws Exception;
+	
+	public boolean checkForCurrentMonthBill(String customerId);
+	
+	public double calculateDue(String customerId);
 }

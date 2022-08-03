@@ -17,4 +17,8 @@ public interface IAdminDAO {
 	public void saveBill(Bill generatedBill);
 	
 	public List<Object[]> getUnpaidBills();
+	
+	public List<Object[]> checkCurrentMonthBill(String customerId);
+	
+	public List<Object[]> calculateDue(String customerId);
 }
